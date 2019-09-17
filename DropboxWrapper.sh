@@ -12,6 +12,11 @@ case $1 in
 		DEBUG=Y
 		shift 
 	;;
+	-v | --verbose )
+		echo "Enabling Verbose"
+		VERBOSE=Y
+		shift
+	;;
 esac
 
 function Debug {

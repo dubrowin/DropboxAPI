@@ -127,6 +127,9 @@ function DropboxSearch {
     if [ "$ERROR" != 1 ]; then  
         # Everything is fine, keep going
         echo "$FEEDBACK" | tr ',' '\n' | grep path_display | cut -d \" -f 4||true
+	if [ "$VERBOSE" == "Y" ]; then
+		echo $FEEDBACK
+	fi
     fi
 
 }
