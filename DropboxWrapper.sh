@@ -20,12 +20,16 @@ function Debug {
     fi
 }
 
+function logit {
+	Debug $1
+}
+
 function RequestFile {
     if [ -z "$1" ]; then  
         echo "ERROR: Need to request a file"
         exit 1
     else
-        FILE="$1"
+        DBFILE="$1"
     fi
 }
 
@@ -34,7 +38,7 @@ function RequestSearch {
         echo "ERROR: Need to provide a search string"
         exit 1
     else
-        FILE="$1"
+        DBFILE="$1"
     fi
 }
 
@@ -62,17 +66,17 @@ case $0 in
 	*DropboxSearch* )
 		RequestSearch $1
 		GetAuth
-		DropboxSearch $FILE
+		DropboxSearch $DBFILE
 	;;
 	*DropboxUpload* )
 		RequestFile $1
 		GetAuth
-		DropboxUpload $FILE
+		DropboxUpload $DBFILE
 	;;
 	*DropboxDelete* )
 		RequestFile $1
 		GetAuth
-		DropboxDelete $FILE
+		DropboxDelete $DBFILE
 	;;
 	*)
 		echo -e "\n\tERROR: unknown command ($0)\n"
