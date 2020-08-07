@@ -7,6 +7,7 @@ logit "reached DropboxAPI.sh"
 CURLOPTS="-sS"
 FEEDBACK=""
 ERROR=""
+VERBOSE="Y"
 
 #########################
 ## Checks
@@ -77,6 +78,7 @@ function DropboxDirCheck {
     fi
 
 }
+
 
 #########################
 ## API Calls
@@ -156,4 +158,39 @@ function DropboxUpload {
         DropboxSuccess "action"
     fi
 }
+
+DropboxDebug "loading DropboxDownload"
+function DropboxDownload {
+    #DropboxDebug "JSON: {\"path\":\"${DIR}/${DBFILE}\"}"
+    FEEDBACK=`curl $CURLOPTS -X POST https://content.dropboxapi.com/2/files/download \
+    --header "Authorization: Bearer $AUTH" \
+    --header 'Content-Type: application/octet-stream' \
+    --header "Dropbox-API-Arg: {\"path\":\"${DIR}/${DBFILE}\"}" > $DBFILE \
+    && DropboxSuccess "api call" || DropboxFail "api call"`
+}	
+
+DropboxDebug "loading DropboxLongList"
+function DropboxLongList {
+    # Do a long list that includes meta data like server_modified time/date stamp
+
+    DropboxDirCheck
+
+    FEEDBACK=`curl $CURLOPTS -X POST https://api.dropboxapi.com/2/files/list_folder \
+    --header "Authorization: Bearer $AUTH" \
+    --header 'Content-Type: application/json' \
+    --data "{\"path\":\"${DIR}\"}" > $DBFILE \
+    && DropboxSuccess "api call" || DropboxFail "api call"`
+}
+
+DropboxDebug "loading DropboxMetadata"
+function DropboxMetadata {
+    # Get Metadata including media data
+    FEEDBACK=`curl $CURLOPTS -X POST https://api.dropboxapi.com/2/files/get_metadata \
+  --header "Authorization: Bearer $AUTH" \
+  --header 'Content-Type: application/json' \
+  --data "{\"path\":\"${DIR}/${DBFILE}\",\"include_media_info\":true}" > $DBFILE \
+   && DropboxSuccess "api call" || DropboxFail "api call"`
+}
+
+## This should always go last
 logit "Finished reading DropboxAPI.sh"
